@@ -15,7 +15,7 @@ struct vec3_t {
  * @d distance transformation vector
  * @s scale transformation vector
  */
-vec3_t to_iso(vec3_t v, vec3_t d, vec3_t s);
+vec3_t coord_to_iso(vec3_t v, vec3_t d, vec3_t s);
 
 /**
  * Convert an isometric coordinate to cartesian
@@ -24,4 +24,4 @@ vec3_t to_iso(vec3_t v, vec3_t d, vec3_t s);
  * @d distance transformation vector
  * @s scale transformation vector
  */
-vec3_t from_iso(vec3_t v, vec3_t d, vec3_t s);
+vec3_t coord_from_iso(vec3_t v, vec3_t d, vec3_t s);
