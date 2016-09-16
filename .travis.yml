@@ -1,0 +1,11 @@
+# Travis-CI Build
+# see travis-ci.org for details
+
+language: c
+
+# Use faster container-based compilation since we don't need sudo
+sudo: false
+
+compiler:
+  - gcc
+  - clang
