@@ -18,33 +18,14 @@ int main() {
         kv_push(int, array, j);
     kv_destroy(array);
 
-    rand_t *rng = rand_init();
-
+    int arr[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    rand_t *ctx = rand_init();
     for (int i = 0; i < 10; ++i) {
-        printf("%.24g\n", rand_float(rng));
+        printf("%d\n", arr[i]);
     }
 
+    rand_shuffle(ctx, arr, 10);
     for (int i = 0; i < 10; ++i) {
-        printf("%.53g\n", rand_double(rng));
-    }
-
-    for (int i = 0; i < 10; ++i) {
-        printf("%zu\n", rand_uint(rng));
-    }
-
-    for (int i = 0; i < 10; ++i) {
-        printf("%zd\n", rand_int(rng));
-    }
-
-    for (int i = 0; i < 10; ++i) {
-        printf("%zd\n", rand_range(rng, 3, 6));
-    }
-
-    for (int i = 0; i < 10; ++i) {
-        printf("%zd\n", rand_range(rng, -12, -2));
-    }
-
-    for (int i = 0; i < 10; ++i) {
-        printf("%zd\n", rand_range(rng, -2, 2));
+        printf("%d\n", arr[i]);
     }
 }
