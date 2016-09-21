@@ -1,15 +1,31 @@
 #include "rand.h"
 
 #include <stdio.h>
+#include <time.h>
 
 rand_t *rand_init() {
-  uint64_t seed;
+	uint64_t seed;
+	FILE *urandom;
 
-  FILE *urandom = fopen("/dev/urandom", "r");
-  fread(&seed, sizeof(uint64_t), 1, urandom);
-  fclose(urandom);
+	if ((urandom = fopen("/dev/urandom", "r")) == NULL) {
+		fprintf(stderr, "rand_init: cannot open /dev/urandom. Using fallback\n");
+		goto error_seed;
+	}
 
-  return rand_seed(seed);
+	if (fread(&seed, sizeof(uint64_t), 1, urandom) != 1) {
+		fprintf(stderr, "rand_init: cannot read /dev/urandom. Using fallback\n");
+		goto error_seed;
+	}
+
+	fclose(urandom);
+	return rand_seed(seed);
+
+error_seed:
+	if (urandom != NULL)
+		fclose(urandom);
+
+	clearerr(urandom);
+	return rand_seed(time(0));
 }
 
 rand_t *rand_seed(uint64_t seed) {
