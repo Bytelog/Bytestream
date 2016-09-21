@@ -1,0 +1,16 @@
+# EditorConfig is awesome: http://EditorConfig.org
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+[{*.{c,h},Makefile}]
+charset = utf-8
+indent_style = tab
+indent_size = 4
+max_line_length = 100
+
+[.travis.yml]
+indent_style = space
+indent_size = 2
