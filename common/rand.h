@@ -41,16 +41,16 @@ double rand_normal(rand_t *ctx);
  */
 #define rand_shuffle(ctx, arr, len) do {                        \
   if ((len) > 1) {                                              \
-    size_t i, j;                                                \
-    for (i = 0; i < (len) - 1; ++i) {                           \
-        j = (size_t) rand_range((ctx), 0, (int64_t) (len));     \
-        if (i == j) continue;                                   \
-        (arr)[i] = (arr)[i] ^ (arr)[j];                         \
-        (arr)[j] = (arr)[i] ^ (arr)[j];                         \
-        (arr)[i] = (arr)[i] ^ (arr)[j];                         \
-    }                                                           \
-  }                                                             \
-} while (0)                                                     \
+	size_t i, j;                                                \
+	for (i = 0; i < (len) - 1; ++i) {                           \
+		j = (size_t) rand_range((ctx), 0, (int64_t) (len));		\
+		if (i == j) continue;									\
+		(arr)[i] = (arr)[i] ^ (arr)[j];							\
+		(arr)[j] = (arr)[i] ^ (arr)[j];							\
+		(arr)[i] = (arr)[i] ^ (arr)[j];							\
+	}															\
+  }																\
+} while (0)														\
 
 /**
  * Pick a random element from an array

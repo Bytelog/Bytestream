@@ -1,8 +1,8 @@
 project(common)
 
 file(GLOB COMMON_SRC
-    "*.h"
-    "*.c"
+	"*.h"
+	"*.c"
 )
 
 add_library(common ${COMMON_SRC})
