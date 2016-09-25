@@ -12,7 +12,7 @@ rand_t *rand_init() {
 		goto error_seed;
 	}
 
-	if (fread(&seed, sizeof(uint64_t), 1, urandom) != 1) {
+	if (fread(&seed, sizeof(seed), 1, urandom) != 1) {
 		fprintf(stderr, "rand_init: cannot read /dev/urandom. Using fallback\n");
 		goto error_seed;
 	}
