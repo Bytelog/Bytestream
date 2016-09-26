@@ -78,9 +78,11 @@ static void log_write(const char *file, const char *function, int line,
 
 	char severity[16];
 	log_severity(level, severity, sizeof(severity) - 1);
-
+#ifndef DEBUG
 	fprintf(stream, "[%s] %s%s %s\n", timestamp, severity, message, error);
-
+#else
+	fprintf(stream, "[%s] %s:%s:%d %s%s %s\n", timestamp, file, function, line, severity, message, error);
+#endif
 	if (pthread_mutex_unlock(&mutex) < 0)
 		perror("pthread_mutex_unlock");
 

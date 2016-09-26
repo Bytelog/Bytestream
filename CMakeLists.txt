@@ -6,7 +6,7 @@ include(CheckCCompilerFlag)
 # Default to Debug configuration
 if (NOT CMAKE_BUILD_TYPE)
 	message(STATUS "CMAKE_BUILD_TYPE not set. Using debug configuration")
-	set(CMAKE_BUILD_TYPE "Debug")
+	set(CMAKE_BUILD_TYPE DEBUG)
 endif()
 
 # Use jemalloc if available
@@ -30,6 +30,10 @@ if (CMAKE_C_COMPILER_ID MATCHES "Clang")
 elseif (CMAKE_C_COMPILER_ID MATCHES "GNU")
 	set(CFLAGS ${CFLAGS} -Wall -Wextra -Wshadow)
 endif()
+
+if (CMAKE_BUILD_TYPE MATCHES DEBUG)
+	set(CFLAGS ${CFLAGS} -DDEBUG)
+endif (CMAKE_BUILD_TYPE MATCHES DEBUG)
 
 if (CMAKE_BUILD_TYPE MATCHES RELEASE)
 	message("debug mode")
