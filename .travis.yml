@@ -22,5 +22,5 @@ before_install:
 script:
     - mkdir build
     - cd build
-    - cmake .. -DCMAKE_BUILD_TYPE=Release
+    - cmake .. -DCMAKE_BUILD_TYPE=RELEASE
     - make -j4 VERBOSE=1
