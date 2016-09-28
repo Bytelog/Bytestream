@@ -19,6 +19,7 @@ typedef enum {
 
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
+// Get log severity as a string
 static inline char *log_severity(log_level_t level) {
 	if (level & LEVEL_DEBUG)
 		return "DEBUG";
@@ -48,9 +49,11 @@ static void log_write(const char *file, const char *function, int line,
 	if (level & LEVEL_WARN || level & LEVEL_ERROR)
 		stream = stderr;
 
+	// Mutex lock required for localtime & strerror
 	if (pthread_mutex_lock(&mutex) < 0)
 		perror("pthread_mutex_lock");
 
+	// Get time in HH:MM:SS format
 	time(&raw_time);
 	strftime(timestamp, sizeof(timestamp), "%T", localtime(&raw_time));
 
@@ -58,11 +61,12 @@ static void log_write(const char *file, const char *function, int line,
 	message = sdscatfmt(message, " %s: ", log_severity(level));
 	message = sdscatvprintf(message, fmt, values);
 
+	// For p- functions, get the message attached to ERRNO
 	if (level & LEVEL_ERRNO)
 		message = sdscatfmt(message, " (%s)", strerror(error_number));
 
 	#ifdef DEBUG
-	message = sdscatfmt(" %s:%s:%u");
+	message = sdscatfmt(" %s:%s:%i", file, function, line);
 	#endif
 
 	message = sdscat(message, "\n");
