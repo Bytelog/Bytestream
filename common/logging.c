@@ -1,6 +1,5 @@
 #include "logging.h"
 
-#define _GNU_SOURCE
 #include <errno.h>
 #include <pthread.h>
 #include <stdarg.h>
@@ -8,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <sds/sds.h>
 
 typedef enum {
 	LEVEL_DEBUG = (1 << 0),
@@ -19,32 +19,17 @@ typedef enum {
 
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-static inline void log_timestring(char *buffer, size_t length) {
-	time_t raw_time;
-	struct tm *local_time;
-
-	time(&raw_time);
-	local_time = localtime(&raw_time);
-	strftime(buffer, length, "%T", local_time);
-}
-
-static inline void log_severity(log_level_t level, char *buffer, size_t len) {
-	switch (level) {
-		case LEVEL_DEBUG:
-			strncpy(buffer, "DEBUG: ", len);
-			break;
-		case LEVEL_INFO:
-			strncpy(buffer, "INFO: ", len);
-			break;
-		case LEVEL_WARN:
-			strncpy(buffer, "WARN: ", len);
-			break;
-		case LEVEL_ERROR:
-			strncpy(buffer, "ERROR: ", len);
-			break;
-		default:
-			strncpy(buffer, "", len);
-	}
+static inline char *log_severity(log_level_t level) {
+	if (level & LEVEL_DEBUG)
+		return "DEBUG";
+	else if (level & LEVEL_INFO)
+		return "INFO";
+	else if (level & LEVEL_WARN)
+		return "WARN";
+	else if (level & LEVEL_ERROR)
+		return "ERROR";
+	else
+		return "";
 }
 
 #ifndef DEBUG
@@ -54,39 +39,39 @@ static void log_write(const char *file, const char *function, int line,
 	log_level_t level, const char *fmt, va_list values)
 #endif
 {
+	FILE *stream = stdout;
 	int error_number = errno;
+	char timestamp[9];
+	time_t raw_time;
+	sds message = sdsempty();
+
+	if (level & LEVEL_WARN || level & LEVEL_ERROR)
+		stream = stderr;
 
 	if (pthread_mutex_lock(&mutex) < 0)
 		perror("pthread_mutex_lock");
 
-	FILE *stream = stdout;
-	if (level & LEVEL_WARN || level & LEVEL_ERROR)
-		stream = stderr;
+	time(&raw_time);
+	strftime(timestamp, sizeof(timestamp), "%T", localtime(&raw_time));
 
-	char *message = 0;
-	if (vasprintf(&message, fmt, values) < 0)
-		perror("sprintf failed");
+	message = sdscatfmt(message, "[%s]", timestamp);
+	message = sdscatfmt(message, " %s: ", log_severity(level));
+	message = sdscatvprintf(message, fmt, values);
 
-	char timestamp[40] = {0};
-	log_timestring(timestamp, sizeof(timestamp) - 1);
+	if (level & LEVEL_ERRNO)
+		message = sdscatfmt(message, " (%s)", strerror(error_number));
 
-	char *error = "";
-	if (level & LEVEL_ERRNO) {
-		char buffer[128] = {0};
-		error = strerror_r(error_number, buffer, sizeof(buffer) - 1);
-	}
+	#ifdef DEBUG
+	message = sdscatfmt(" %s:%s:%u");
+	#endif
 
-	char severity[16];
-	log_severity(level, severity, sizeof(severity) - 1);
-#ifndef DEBUG
-	fprintf(stream, "[%s] %s%s %s\n", timestamp, severity, message, error);
-#else
-	fprintf(stream, "[%s] %s:%s:%d %s%s %s\n", timestamp, file, function, line, severity, message, error);
-#endif
+	message = sdscat(message, "\n");
+	fwrite(message, sizeof(char), sdslen(message), stream);
+
 	if (pthread_mutex_unlock(&mutex) < 0)
 		perror("pthread_mutex_unlock");
 
-	free(message);
+	sdsfree(message);
 }
 
 #ifndef DEBUG
@@ -114,8 +99,8 @@ CREATE_FUNCTION(debug, LEVEL_DEBUG)
 
 CREATE_FUNCTION(info, LEVEL_INFO)
 CREATE_FUNCTION(warn, LEVEL_WARN)
-CREATE_FUNCTION(pwarn, LEVEL_WARN | LEVEL_ERRNO)
+CREATE_FUNCTION(pwarn, (log_level_t) (LEVEL_WARN | LEVEL_ERRNO))
 CREATE_FUNCTION(error, LEVEL_ERROR)
-CREATE_FUNCTION(perror, LEVEL_ERROR | LEVEL_ERRNO)
+CREATE_FUNCTION(perror, (log_level_t) (LEVEL_ERROR | LEVEL_ERRNO))
 
 #undef CREATE_FUNCTION

@@ -6,10 +6,9 @@
 							__attribute__((format(printf, 1, 2)))									\
 							__VA_ARGS__;
 
-#define log_debug(fmt, ...) 0
+#define log_debug(fmt, ...)
 
 #else
-
 #define CREATE_LOG_PROTOTYPE(level_, ...)															\
 	void log_##level_##_debug(const char *file, const char *fun, int line, const char *fmt, ...)	\
 							__attribute__((format(printf, 4, 5)))									\
@@ -32,9 +31,9 @@ CREATE_LOG_PROTOTYPE(debug)
 
 #endif
 
-CREATE_LOG_PROTOTYPE(info, __attribute__((unused)))
-CREATE_LOG_PROTOTYPE(warn, __attribute__((unused)))
-CREATE_LOG_PROTOTYPE(pwarn, __attribute__((unused)))
+CREATE_LOG_PROTOTYPE(info, __attribute__(()))
+CREATE_LOG_PROTOTYPE(warn, __attribute__(()))
+CREATE_LOG_PROTOTYPE(pwarn, __attribute__(()))
 CREATE_LOG_PROTOTYPE(error, __attribute__((noreturn)))
 CREATE_LOG_PROTOTYPE(perror, __attribute__((noreturn)))
 

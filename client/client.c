@@ -9,14 +9,11 @@
 #include <logging.h>
 
 int main() {
-
-	log_debug("Hello, main @ %016x", &main);
+	//log_debug("Hello, main @ %016x", &main);
 	log_info("2+2 = %d", 4);
 	log_warn("Danger will %s", "robinson");
 	log_error("Boom~");
 
-
-	vec3_t x = { .x = 5, .y = 6, .z = 8 };
 	sds s = sdsnew("foo");
 	printf("%s\n", s);
 	sdsfree(s);
