@@ -50,8 +50,7 @@ static void log_write(const char *file, const char *function, int line,
 		stream = stderr;
 
 	// Mutex lock required for localtime & strerror
-	if (pthread_mutex_lock(&mutex) < 0)
-		perror("pthread_mutex_lock");
+	pthread_mutex_lock(&mutex);
 
 	// Get time in HH:MM:SS format
 	time(&raw_time);
@@ -72,9 +71,7 @@ static void log_write(const char *file, const char *function, int line,
 	message = sdscat(message, "\n");
 	fwrite(message, sizeof(char), sdslen(message), stream);
 
-	if (pthread_mutex_unlock(&mutex) < 0)
-		perror("pthread_mutex_unlock");
-
+	pthread_mutex_unlock(&mutex);
 	sdsfree(message);
 }
 
