@@ -65,7 +65,7 @@ static void log_write(const char *file, const char *function, int line,
 		message = sdscatfmt(message, " (%s)", strerror(error_number));
 
 	#ifdef DEBUG
-	message = sdscatfmt(" %s:%s:%i", file, function, line);
+	message = sdscatfmt(message, " %s:%s:%i", file, function, line);
 	#endif
 
 	message = sdscat(message, "\n");
