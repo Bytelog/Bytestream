@@ -25,7 +25,7 @@ error_seed:
 		fclose(urandom);
 
 	clearerr(urandom);
-	return rand_seed(time(0));
+	return rand_seed((uint64_t) time(0));
 }
 
 rand_t *rand_seed(uint64_t seed) {

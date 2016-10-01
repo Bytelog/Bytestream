@@ -36,7 +36,7 @@ if (CMAKE_BUILD_TYPE MATCHES DEBUG)
 endif (CMAKE_BUILD_TYPE MATCHES DEBUG)
 
 if (CMAKE_BUILD_TYPE MATCHES RELEASE)
-	message("debug mode")
+	set(CFLAGS ${CFLAGS} -Werror)
 endif (CMAKE_BUILD_TYPE MATCHES RELEASE)
 
 add_subdirectory(lib)
