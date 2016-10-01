@@ -18,6 +18,7 @@ before_install:
     - if [ "$CC" = "gcc" ]; then sudo apt-get install -qq gcc-5; fi
     - sudo ln -s $(which gcc-5) /usr/local/bin/gcc
     - sudo apt-get install -qq libsdl2-dev
+    - sudo apt-get install -qq libjemalloc-dev
 
 script:
     - mkdir build
