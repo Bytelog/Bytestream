@@ -26,7 +26,7 @@ set(CFLAGS -std=c11 -pipe -ffast-math -pedantic)
 
 # Compiler specific flags
 if (CMAKE_C_COMPILER_ID MATCHES "Clang")
-	set(CFLAGS ${CFLAGS} -Weverything -Wno-documentation-unknown-command)
+	set(CFLAGS ${CFLAGS} "-Weverything -Wno-documentation-unknown-command")
 elseif (CMAKE_C_COMPILER_ID MATCHES "GNU")
 	set(CFLAGS ${CFLAGS} -Wall -Wextra -Wshadow)
 endif()
