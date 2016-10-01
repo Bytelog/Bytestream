@@ -4,9 +4,7 @@
 #include "mem.h"
 #include "logging.h"
 
-
 #define _ALLOC_WRAP(method, ...)						\
-	log_debug("Allocation Wrapper for '%s'", #method);	\
 	void* alloc = method(__VA_ARGS__); 					\
 	if(alloc == NULL) {									\
 		log_error("'%s' failed to allocate!", #method);	\
