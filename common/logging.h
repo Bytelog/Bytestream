@@ -1,6 +1,6 @@
 #pragma once
 
-/**
+/*
  * Write log entry to the appropriate stream based on severity
  *
  * @fmt The printf style format string for the log message

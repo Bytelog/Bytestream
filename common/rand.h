@@ -8,7 +8,7 @@ typedef struct _krand_t rand_t;
 // Set up a context with a random seed
 rand_t *rand_init(void);
 
-/**
+/*
  * Set up a context with a given seed
  *
  * @seed Number to initialize the PRNG with

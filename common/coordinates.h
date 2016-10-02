@@ -8,7 +8,7 @@ struct vec3_t {
 	float z;
 };
 
-/**
+/*
  * Convert a cartesian coordinate to isometric
  *
  * @v source vector
@@ -17,7 +17,7 @@ struct vec3_t {
  */
 vec3_t coord_to_iso(vec3_t v, vec3_t d, vec3_t s);
 
-/**
+/*
  * Convert an isometric coordinate to cartesian
  *
  * @v source vector
