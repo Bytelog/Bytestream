@@ -5,22 +5,38 @@ dist: trusty
 sudo: required
 language: c
 
-compiler:
-    - gcc
-    - clang
+matrix:
+  include:
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-5
+      env: COMPILER=gcc-5
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-precise-3.8
+          packages:
+            - clang-3.8
+      env: COMPILER=clang-3.8
 
 before_install:
-    - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-    - sudo add-apt-repository -y ppa:george-edison55/cmake-3.x
-    - sudo add-apt-repository -y ppa:team-xbmc/ppa
-    - sudo apt-get update -qq
-    - sudo apt-get install cmake -qq
-    - if [ "$CC" = "gcc" ]; then sudo apt-get install -qq gcc-5; fi
-    - sudo ln -s $(which gcc-5) /usr/local/bin/gcc
-    - sudo apt-get install -qq libsdl2-dev
+  - sudo add-apt-repository -y ppa:team-xbmc/ppa
+  - sudo apt-get update -qq
+  - sudo apt-get install libsdl2-dev -qq
+
+install:
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      CMAKE_URL="https://cmake.org/files/v3.5/cmake-3.5.2-Linux-x86_64.tar.gz"
+      mkdir ~/cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C ~/cmake
+      export PATH=${HOME}/cmake/bin:${PATH}
+    fi
 
 script:
-    - mkdir build
-    - cd build
-    - cmake .. -DCMAKE_BUILD_TYPE=RELEASE
-    - make VERBOSE=1
+  - mkdir build && cd build
+  - cmake .. -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_C_COMPILER=$COMPILER && make VERBOSE=1
