@@ -12,7 +12,7 @@ endif()
 # Use jemalloc if available
 find_library(JEMALLOC_LIBRARY NAMES jemalloc)
 if (JEMALLOC_LIBRARY)
-	message(STATUS "jemalloc found: ${JEMALLOC_LIBRARY}")
+	message(STATUS "Using jemalloc: ${JEMALLOC_LIBRARY}")
 	list(APPEND ADDITIONAL_LIBRARIES ${JEMALLOC_LIBRARY})
 endif()
 
