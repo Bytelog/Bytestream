@@ -1,5 +1,11 @@
 project(lib)
 
+add_library(iniparser
+    iniparser/src/dictionary.c
+    iniparser/src/iniparser.c
+    iniparser/src/iniparser.h
+)
+
 add_library(klib
 	klib/kbit.h
 	klib/kbtree.h
@@ -18,9 +24,12 @@ add_library(sds
 	sds/sds.c
 )
 
+target_include_directories(iniparser SYSTEM PUBLIC iniparser/src)
 target_include_directories(klib SYSTEM PUBLIC .)
 target_include_directories(sds SYSTEM PUBLIC .)
 
+# Disable compiler warnings
+target_compile_options(iniparser PRIVATE -w)
 target_compile_options(klib PRIVATE -w)
 target_compile_options(sds PRIVATE -w)
 

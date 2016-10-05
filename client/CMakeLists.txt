@@ -8,4 +8,4 @@ pkg_search_module(SDL2 REQUIRED sdl2 SDL2)
 
 target_compile_options(client PRIVATE ${CFLAGS})
 target_include_directories(client PRIVATE ${SDL2_INCLUDE_DIRS})
-target_link_libraries(client common sds klib m ${SDL2_LIBRARIES})
+target_link_libraries(client common sds iniparser klib m ${SDL2_LIBRARIES})
