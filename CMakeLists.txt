@@ -22,7 +22,7 @@ if (NOT HAS_C11)
 	message(FATAL_ERROR "Compiler must support C11")
 endif()
 
-set(CFLAGS -std=c11 -pipe -ffast-math -pedantic)
+set(CFLAGS -std=c11 -pipe -ffast-math -march=native -pedantic)
 
 # Compiler specific flags
 if (CMAKE_C_COMPILER_ID MATCHES "Clang")
