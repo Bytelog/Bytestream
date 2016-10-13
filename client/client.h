@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 typedef struct game_t game_t;
 typedef struct game_config_t game_config_t;
