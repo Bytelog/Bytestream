@@ -18,6 +18,11 @@ add_library(klib
 	klib/kvec.h
 )
 
+add_library(mpack
+	mpack/src/mpack/mpack.h
+	mpack/src/mpack/mpack.c
+)
+
 add_library(sds
 	sds/sds.h
 	sds/sdsalloc.h
@@ -26,10 +31,12 @@ add_library(sds
 
 target_include_directories(iniparser SYSTEM PUBLIC iniparser/src)
 target_include_directories(klib SYSTEM PUBLIC .)
+target_include_directories(mpack SYSTEM PUBLIC mpack/src/mpack)
 target_include_directories(sds SYSTEM PUBLIC .)
 
 # Disable compiler warnings
 target_compile_options(iniparser PRIVATE -w)
 target_compile_options(klib PRIVATE -w)
+target_compile_options(mpack PRIVATE -w)
 target_compile_options(sds PRIVATE -w)
 
