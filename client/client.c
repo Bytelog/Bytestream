@@ -5,6 +5,7 @@
 #include <logging.h>
 #include <klib/kvec.h>
 #include <coordinates.h>
+#include "assets.h"
 
 static game_config_t *load_config() {
 	game_config_t *config = calloc(1, sizeof(*config));
@@ -124,7 +125,40 @@ static void game_exit(game_t *game) {
 
 int main() {
 	game_t game;
-	game_init(&game);
-	game_loop(&game);
-	game_exit(&game);
+
+
+
+	kvec_t(region_t) regions;
+	kv_init(regions);
+
+	kvec_t(object_t) objects;
+	kv_init(objects);
+
+	map_t map = {
+		.name = "Demo Map",
+		.bounds = { 32, 16, 1 }
+	};
+
+	kv_init(map.tiles);
+
+	for (uint32_t i = 0; i < 16; ++i) {
+		tile_t tile;
+		tile.pos = i;
+		tile.tile = 0;
+		tile.active = 1;
+		tile.rotation = 0;
+		kv_push(tile_t, map.tiles, tile);
+	}
+
+	kv_init(map.regions);
+	kv_init(map.objects);
+
+	write_map("test.mp", &map);
+
+	map_t *new_map;
+	read_map("test.mp", new_map);
+	log_info("Name: %s, bounds: %d, %d, %d", new_map->name, new_map->bounds[0], new_map->bounds[1], new_map->bounds[2]);
+	//game_init(&game);
+	//game_loop(&game);
+	//game_exit(&game);
 }

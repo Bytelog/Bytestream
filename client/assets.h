@@ -2,9 +2,12 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <SDL2/SDL.h>
+#include <common.h>
 #include <coordinates.h>
 #include <klib/kvec.h>
 #include <mpack/mpack.h>
+
+#define MAX_TILES (1<<26)
 
 typedef struct map_t map_t;
 typedef struct tile_t tile_t;
@@ -35,7 +38,6 @@ struct object_t {
 struct map_t {
 	char name[64];
 	uint16_t bounds[3];
-	uint32_t color;
 	kvec_t(tile_t) tiles;
 	kvec_t(region_t) regions;
 	kvec_t(object_t) objects;
@@ -43,5 +45,9 @@ struct map_t {
 
 //bool compress_data(char **, size_t *length);
 //bool decompress_data(char **data, size_t *length);
-bool write_file(const char *filename, const char *data, size_t length);
-bool read_file(const char *filename, char **data, size_t *length);
+bool write_file(const char *path, const void *data, size_t length);
+bool read_file(const char *path, void *data, size_t *length);
+
+// add const qualifier
+bool write_map(const char *path, map_t *map);
+bool read_map(const char *path, map_t *map);
