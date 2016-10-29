@@ -72,7 +72,7 @@ bool write_map(const char *path, map_t *map) {
 	mpack_write_cstr(&writer, "tiles");
 	mpack_start_array(&writer, kv_size(map->tiles));
 	for (size_t i = 0; i < kv_size(map->tiles); ++i) {
-		tile_t tile = kv_a(tile_t, map->tiles, i);
+		tile_t tile = kv_A(map->tiles, i);
 		mpack_start_array(&writer, 3);
 		mpack_write_u32(&writer, tile.pos);
 		mpack_write_u16(&writer, tile.tile);

@@ -19,8 +19,8 @@ add_library(klib
 )
 
 add_library(mpack
-	mpack/src/mpack/mpack.h
-	mpack/src/mpack/mpack.c
+	mpack/mpack.h
+	mpack/mpack.c
 )
 
 add_library(sds
@@ -31,7 +31,7 @@ add_library(sds
 
 target_include_directories(iniparser SYSTEM PUBLIC iniparser/src)
 target_include_directories(klib SYSTEM PUBLIC .)
-target_include_directories(mpack SYSTEM PUBLIC mpack/src)
+target_include_directories(mpack SYSTEM PUBLIC .)
 target_include_directories(sds SYSTEM PUBLIC .)
 
 # Disable compiler warnings

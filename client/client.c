@@ -141,7 +141,7 @@ int main() {
 
 	kv_init(map.tiles);
 
-	for (uint32_t i = 0; i < 16; ++i) {
+	for (uint32_t i = 0; i < 128*64*1; ++i) {
 		tile_t tile;
 		tile.pos = i;
 		tile.tile = 0;
@@ -155,9 +155,12 @@ int main() {
 
 	write_map("test.mp", &map);
 
-	map_t *new_map;
-	read_map("test.mp", new_map);
-	log_info("Name: %s, bounds: %d, %d, %d", new_map->name, new_map->bounds[0], new_map->bounds[1], new_map->bounds[2]);
+	map_t new_map;
+	read_map("test.mp", &new_map);
+	log_info("Name: %s, bounds: %d, %d, %d", new_map.name, new_map.bounds[0], new_map.bounds[1], new_map.bounds[2]);
+	for (size_t i = 0; i < 16; ++i) {
+		log_info("Pos: %d", kv_A(new_map.tiles, i));
+	}
 	//game_init(&game);
 	//game_loop(&game);
 	//game_exit(&game);
