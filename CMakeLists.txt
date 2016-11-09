@@ -22,13 +22,33 @@ if (NOT HAS_C11)
 	message(FATAL_ERROR "Compiler must support C11")
 endif()
 
+
+
 set(CFLAGS -std=c11 -pipe -ffast-math -march=native -pedantic)
+
 
 # Compiler specific flags
 if (CMAKE_C_COMPILER_ID MATCHES "Clang")
 	set(CFLAGS ${CFLAGS} -Weverything -Wno-documentation-unknown-command -Wno-padded)
 elseif (CMAKE_C_COMPILER_ID MATCHES "GNU")
 	set(CFLAGS ${CFLAGS} -Wall -Wextra -Wshadow)
+endif()
+
+#check for LTO and GOLD
+check_c_compiler_flag(-flto HAS_LTO)
+if (HAS_LTO)
+	message(STATUS "Compiler supports LTO, using")
+	set(CFLAGS ${CFLAGS} -flto)
+endif()
+
+option(USE_GOLD "Use GNU GOLD linker rather than LD")
+if (USE_GOLD)
+execute_process(COMMAND ${CMAKE_C_COMPILER} -fuse-ld=gold -Wl,--version ERROR_QUIET OUTPUT_VARIABLE LD_VERSION)
+	if (NOT "${LD_VERSION}" MATCHES "GNU gold")
+		message(FATAL_ERROR "GNU gold linker isn't available.")
+	endif()
+	message(STATUS "LD.GOLD found, using...")
+	set(CFLAGS ${CFLAGS} -fuse-ld=gold)
 endif()
 
 if (CMAKE_BUILD_TYPE MATCHES DEBUG)
