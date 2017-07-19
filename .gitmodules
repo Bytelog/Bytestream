@@ -4,6 +4,3 @@
 [submodule "lib/klib"]
 	path = lib/klib
 	url = https://github.com/attractivechaos/klib.git
-[submodule "lib/iniparser"]
-	path = lib/iniparser
-	url = https://github.com/ndevilla/iniparser
