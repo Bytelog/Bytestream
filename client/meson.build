@@ -4,8 +4,8 @@ openal = dependency('openal')
 x11 = dependency('x11')
 raylib = cc.find_library('raylib', dirs: '/usr/local/lib')
 
-executable('g1',
-    'main.c',
+executable('client',
+    'client.c',
     include_directories: lib_inc,
     c_args: cflags,
     dependencies: [raylib, jemalloc, glfw, gl, openal, x11],

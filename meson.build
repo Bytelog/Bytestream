@@ -1,6 +1,6 @@
-project('g1', 'c',
+project('bytestream', 'c',
     version: '0',
-    license: 'BSD 3-Clause',
+    license: 'MIT',
     default_options: [
         'buildtype=debugoptimized',
         'layout=flat',
@@ -21,5 +21,5 @@ src_dir = join_paths(meson.source_root(), 'src')
 lib_dir = join_paths(meson.source_root(), 'lib')
 
 subdir('lib')
-subdir('src')
+subdir('client')
 

@@ -4,7 +4,7 @@
 #include <util/rand.h>
 #include <raylib.h>
 #include <klib/kvec.h>
-
+/*
 #define CHUNK_SIZ  16
 #define CHUNK_SIZL 1<<16
 
@@ -99,5 +99,24 @@ int main() {
     UnloadImage(sheet);
     CloseWindow();
 
+    return 0;
+}
+
+*/
+
+int main() {
+    int screenWidth = 800;
+    int screenHeight = 450;
+
+    InitWindow(screenWidth, screenHeight, "g1");
+    SetTargetFPS(60);
+
+    while (!WindowShouldClose()) {
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+        EndDrawing();
+    }
+
+    CloseWindow();
     return 0;
 }
