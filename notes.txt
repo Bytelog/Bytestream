@@ -1,0 +1,1 @@
+M_SQRT_2 needs a header define in kmath
