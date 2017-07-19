@@ -76,23 +76,23 @@ static void log_write(const char *file, const char *function, int line,
 }
 
 #ifndef DEBUG
-#define CREATE_FUNCTION(function, level)                                                            \
-    void log_##function(const char *fmt, ...)  {                                                    \
-        va_list values;                                                                             \
-        va_start(values, fmt);                                                                      \
-        log_write(level, fmt, values);                                                              \
-        va_end(values);                                                                             \
-        if ((level) & LEVEL_ERROR) exit(1);                                                         \
+#define CREATE_FUNCTION(function, level)                                       \
+    void log_##function(const char *fmt, ...)  {                               \
+        va_list values;                                                        \
+        va_start(values, fmt);                                                 \
+        log_write(level, fmt, values);                                         \
+        va_end(values);                                                        \
+        if ((level) & LEVEL_ERROR) exit(1);                                    \
     }
 #else
-#define CREATE_FUNCTION(function, level)                                                            \
-    void log_##function##_debug(const char *file, const char *func, int line,                       \
-                                const char *fmt, ...) {                                             \
-        va_list values;                                                                             \
-        va_start(values, fmt);                                                                      \
-        log_write(file, func, line, level, fmt, values);                                            \
-        va_end(values);                                                                             \
-        if ((level) & LEVEL_ERROR) abort();                                                         \
+#define CREATE_FUNCTION(function, level)                                       \
+    void log_##function##_debug(const char *file, const char *func, int line,  \
+                                const char *fmt, ...) {                        \
+        va_list values;                                                        \
+        va_start(values, fmt);                                                 \
+        log_write(file, func, line, level, fmt, values);                       \
+        va_end(values);                                                        \
+        if ((level) & LEVEL_ERROR) abort();                                    \
     }
 
 CREATE_FUNCTION(debug, LEVEL_DEBUG)
