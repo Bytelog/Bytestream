@@ -1,83 +1,103 @@
-#include "client.h"
-
-#include <iniparser.h>
+#include <standard.h>
 #include <stdio.h>
-#include <logging.h>
+#include <sds/sds.h>
+#include <util/rand.h>
+#include <raylib.h>
+#include <klib/kvec.h>
 
-static game_config_t *load_config() {
-	game_config_t *config = calloc(1, sizeof(*config));
-	dictionary *ini = iniparser_load("../client/settings.ini");
+#define CHUNK_SIZ  16
+#define CHUNK_SIZL 1<<16
 
-	if (!ini)
-		log_error("Could not find settings file");
+struct map_tile {
+    u8 rotation : 5;
+    u8 unused   : 2;
+    bool active : 1;
+    //u16 tile;
+};
 
-	config->win_height = iniparser_getint(ini, "window:height", 800);
-	config->win_width = iniparser_getint(ini, "window:width", 600);
-	config->env_grid = iniparser_getboolean(ini, "game:grid", false) != false;
+struct map_chunk_pos {
+    union {
+        u16 position;
+        struct {
+            i8 x : 4;
+            i8 y : 4;
+            i8 z : 7;
+            i8 s : 1;
+        };
+    };
+};
 
-	if (iniparser_getboolean(ini, "window:borderless", false))
-		config->win_flags |= SDL_WINDOW_BORDERLESS;
-	if (iniparser_getboolean(ini, "window:fullscreen", false))
-		config->win_flags |= SDL_WINDOW_FULLSCREEN;
 
-	iniparser_freedict(ini);
-	return config;
+struct map_chunk {
+    struct map_tile[65536]
+};
+
+struct map_object {
+    Vector3 position;
+};
+
+struct map_ctx {
+    char name[64];
+    u16 bounds[3];
+    struct map_tile tiles[65536];
+    kvec_t(struct map_object) objects;
+};
+
+Vector3 VectorISO(Vector3 v) {
+    return (Vector3) {
+        .x = v.x + v.y,
+        .y = (v.y - v.x) / 2 + v.z,
+        .z = v.z
+    };
 }
 
-static void destroy_config(game_config_t *config) {
-	free(config);
-}
-
-static void game_init(game_t *game) {
-	memset(game, 0, sizeof(*game));
-	game->config = load_config();
-
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-		log_error("Couldn't initialize game. SDL Error: %s", SDL_GetError());
-
-	game->window = SDL_CreateWindow("Game",
-		SDL_WINDOWPOS_UNDEFINED,
-		SDL_WINDOWPOS_UNDEFINED,
-		game->config->win_width,
-		game->config->win_height,
-		game->config->win_flags
-	);
-
-	if (!game->window)
-		log_error("Couldn't create window. SDL Error: %s", SDL_GetError());
-
-	if (!(game->renderer = SDL_CreateRenderer(game->window, -1, 0)))
-		log_error("Couldn't create renderer. SDL Error: %s", SDL_GetError());
-
-	game->buffer = SDL_CreateTexture(game->renderer,
-		SDL_PIXELFORMAT_RGBA8888,
-		SDL_TEXTUREACCESS_TARGET,
-		8192,
-		8192
-	);
-
-	if (!(game->buffer))
-		log_error("Couldn't create texture. SDL Error: %s", SDL_GetError());
-
-	if (SDL_ShowCursor(SDL_DISABLE) < 0)
-		log_warn("Couldn't disable cursor. SDL Error: %s", SDL_GetError());
-}
-
-static void game_loop(game_t *game) {
-	SDL_Delay(25);
-	log_info("Window [%d, %d]", game->config->win_width, game->config->win_height);
-}
-
-static void game_exit(game_t *game) {
-	destroy_config(game->config);
-	SDL_DestroyRenderer(game->renderer);
-	SDL_DestroyWindow(game->window);
-	SDL_Quit();
+Vector3 VectorOrtho(Vector3 v) {
+    return (Vector3) {
+        .x = v.x / 2 - v.y + v.z,
+        .y = v.y + v.x / 2 - v.z,
+        .z = v.z
+    };
 }
 
 int main() {
-	game_t game;
-	game_init(&game);
-	game_loop(&game);
-	game_exit(&game);
+    int screenWidth = 1024;
+    int screenHeight = 720;
+
+    InitWindow(screenWidth, screenHeight, "g1");
+    SetTargetFPS(60);
+
+    Camera2D cam = { .zoom = 0.5 };
+
+    struct map_ctx m = { 0 };
+    struct map_tile t = { .active = true };
+    kv_init(m.tiles);
+    kv_push(struct map_tile, m.tiles, t);
+
+    printf("SIZE OF MAP TILE: %zu\n", sizeof(struct map_tile) * 8);
+    printf("SIZE OF TEST: %zu\n", sizeof(struct test) * 8);
+
+    Vector2 pos = { 0, 0 };
+    int i = 0;
+    int j = 0;
+    Rectangle source = { i * 148, j * 164, 148, 164 };
+
+    Image sheet = LoadImage("assets/sprites/tiles.png");
+    Texture2D tiles = LoadTextureFromImage(sheet);
+
+    while (!WindowShouldClose()) {
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+
+        Begin2dMode(cam);
+        DrawTextureRec(tiles, source, pos, WHITE);
+        End2dMode();
+
+        EndDrawing();
+    }
+
+    UnloadTexture(tiles);
+    UnloadImage(sheet);
+    CloseWindow();
+
+    return 0;
 }
