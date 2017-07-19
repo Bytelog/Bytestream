@@ -3,9 +3,9 @@
 typedef struct vec3_t vec3_t;
 
 struct vec3_t {
-	float x;
-	float y;
-	float z;
+    float x;
+    float y;
+    float z;
 };
 
 /*
