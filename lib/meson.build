@@ -6,7 +6,9 @@ sds = static_library('sds',
 )
 
 util = static_library('util',
+    'util/log.c',
     'util/rand.c',
     'util/isaac/isaac64.c',
     dependencies: [math],
+    link_with: [sds],
 )

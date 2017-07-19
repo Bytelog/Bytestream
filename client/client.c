@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <sds/sds.h>
 #include <util/rand.h>
+#include <util/log.h>
 #include <raylib.h>
 #include <klib/kvec.h>
 /*
@@ -115,6 +116,7 @@ int main() {
         BeginDrawing();
         ClearBackground(RAYWHITE);
         EndDrawing();
+            log_info("test");
     }
 
     CloseWindow();

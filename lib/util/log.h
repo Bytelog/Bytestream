@@ -28,7 +28,7 @@
 	log_info_debug(__FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__)
 #define log_warn(fmt, ...)																			\
 	log_warn_debug(__FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__)
-#define log_pwarn(fmt, ...)																		    \
+#define log_pwarn(fmt, ...)																			\
 	log_pwarn_debug(__FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__)
 #define log_error(fmt, ...)																			\
 	log_error_debug(__FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__)
