@@ -17,9 +17,6 @@ math = cc.find_library('m', required: false)
 
 cflags = ['-ffast-math', '-Wpedantic']
 
-src_dir = join_paths(meson.source_root(), 'src')
-lib_dir = join_paths(meson.source_root(), 'lib')
-
 subdir('lib')
 subdir('client')
 
