@@ -9,35 +9,44 @@
 #include <time.h>
 #include <sds/sds.h>
 
-typedef enum {
+enum log_level {
     LEVEL_DEBUG = (1 << 0),
     LEVEL_INFO  = (1 << 1),
     LEVEL_WARN  = (1 << 2),
     LEVEL_ERROR = (1 << 3),
     LEVEL_ERRNO = (1 << 4)
-} log_level_t;
+};
 
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 // Get log severity as a string
-static inline char *log_severity(log_level_t level) {
+static inline char *log_severity(enum log_level level) {
     if (level & LEVEL_DEBUG)
         return "DEBUG";
-    else if (level & LEVEL_INFO)
+
+    if (level & LEVEL_INFO)
         return "INFO";
-    else if (level & LEVEL_WARN)
+
+    if (level & LEVEL_WARN)
         return "WARN";
-    else if (level & LEVEL_ERROR)
+
+    if (level & LEVEL_ERROR)
         return "ERROR";
-    else
-        return "";
+
+    return "";
 }
 
 #ifndef DEBUG
-static void log_write(log_level_t level, const char *fmt, va_list values)
+static void log_write(enum log_level level, const char *fmt, va_list values)
 #else
-static void log_write(const char *file, const char *function, int line,
-    log_level_t level, const char *fmt, va_list values)
+static void log_write(
+    const char *file,
+    const char *function,
+    int line,
+    enum log_level level,
+    const char *fmt,
+    va_list values
+)
 #endif
 {
     FILE *stream = stdout;
@@ -86,8 +95,13 @@ static void log_write(const char *file, const char *function, int line,
     }
 #else
 #define CREATE_FUNCTION(function, level)                                       \
-    void log_##function##_debug(const char *file, const char *func, int line,  \
-                                const char *fmt, ...) {                        \
+    void log_##function##_debug(                                               \
+        const char *file,                                                      \
+        const char *func,                                                      \
+        int line,                                                              \
+        const char *fmt,                                                       \
+        ...                                                                    \
+    ) {                                                                        \
         va_list values;                                                        \
         va_start(values, fmt);                                                 \
         log_write(file, func, line, level, fmt, values);                       \
@@ -100,8 +114,8 @@ CREATE_FUNCTION(debug, LEVEL_DEBUG)
 
 CREATE_FUNCTION(info, LEVEL_INFO)
 CREATE_FUNCTION(warn, LEVEL_WARN)
-CREATE_FUNCTION(pwarn, (log_level_t) (LEVEL_WARN | LEVEL_ERRNO))
+CREATE_FUNCTION(pwarn, (enum log_level) (LEVEL_WARN | LEVEL_ERRNO))
 CREATE_FUNCTION(error, LEVEL_ERROR)
-CREATE_FUNCTION(perror, (log_level_t) (LEVEL_ERROR | LEVEL_ERRNO))
+CREATE_FUNCTION(perror, (enum log_level) (LEVEL_ERROR | LEVEL_ERRNO))
 
 #undef CREATE_FUNCTION
