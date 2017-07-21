@@ -55,7 +55,7 @@ static void log_write(
     time_t raw_time;
     sds message = sdsempty();
 
-    if (level & LEVEL_WARN || level & LEVEL_ERROR)
+    if (level & (LEVEL_WARN | LEVEL_ERROR))
         stream = stderr;
 
     // Mutex lock required for localtime & strerror
